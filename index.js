@@ -71,12 +71,6 @@ async function run() {
         })
 
 
-
-
-
-
-
-
         //DELETE API
         app.delete('/tasks/:id', async (req, res) => {
             const id = req.params.id;
