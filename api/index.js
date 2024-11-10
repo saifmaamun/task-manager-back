@@ -56,8 +56,9 @@ async function run() {
         app.put('/tasks/:id', async (req, res) => {
             const id = req.params.id;
             const updatedTask = req.body;
-            const filter = { _id: ObjectId(id) };
-            console.log(updatedTask)
+            const filter = { _id: new ObjectId(id) };
+            console.log(filter)
+            console.log(updatedTask, 'update')
             const updateDoc = {
                 $set: {
                     status: updatedTask.status
@@ -72,12 +73,24 @@ async function run() {
 
 
 
+
+
+
+
         //DELETE API
         app.delete('/tasks/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             console.log(id, 'hited')
             const result = await taskCollection.deleteOne(query)
+            res.json(result)
+        })
+
+        app.get('/tasks/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            console.log(id, 'hited')
+            const result = await taskCollection.findOne(query)
             res.json(result)
         })
 
