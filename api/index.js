@@ -14,8 +14,10 @@ require('dotenv').config();
 
 
 // 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ogqtm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ogqtm.mongodb.net/taskmanager?retryWrites=true&w=majority&appName=Cluster0`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
 
 
 // 
@@ -24,7 +26,12 @@ async function run() {
         console.log('from function')
         await client.connect();
         const database = client.db("taskmanager");
-        const taskCollection = database.collection('taskmanager');
+        const taskCollection = database.collection('tasks');
+
+        app.get('/', (req, res) => {
+            console.log('connected from get')
+            res.send('Hello World! from task backend')
+        })
 
         // GET API
         app.get('/tasks', async (req, res) => {
@@ -48,19 +55,17 @@ async function run() {
         //UPDATE API
         app.put('/tasks/:id', async (req, res) => {
             const id = req.params.id;
-            const updatedBook = req.body;
+            const updatedTask = req.body;
             const filter = { _id: ObjectId(id) };
+            console.log(updatedTask)
             const updateDoc = {
                 $set: {
-                    name: updatedBook.name,
-                    writer: updatedBook.writer,
-                    hints: updatedBook.hints,
-                    img: updatedBook.img,
-                    price: updatedBook.price,
+                    status: updatedTask.status
                 },
             };
-            const result = await booksCollaction.updateOne(filter, updateDoc)
+            const result = await taskCollection.updateOne(filter, updateDoc)
             console.log('updating', id)
+            console.log(result)
             res.json(result)
         })
 
@@ -86,12 +91,9 @@ run().catch(console.dir);
 
 
 
-// 
-app.get('/', (req, res) => {
-    console.log('connected from get')
-    res.send('Hello World! from task backend')
-})
+
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`Example app listening at port: ${port}`, uri)
+
 })

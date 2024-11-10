@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const taskSchema = new mongoose.Schema({
+const taskSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String },
     priority: { type: String, enum: ['Low', 'Medium', 'High'], default: 'Low' },
@@ -8,4 +8,4 @@ const taskSchema = new mongoose.Schema({
     deadline: { type: Date, required: true },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Task', taskSchema);
+export default model('Task', taskSchema);
